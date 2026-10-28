@@ -1,0 +1,41 @@
+Task10.c
+#include <stdio.h> 
+#include <limits.h> 
+int main(void) 
+{ 
+ long long units = 65535;
+ long long bill_paise;
+ long long village, taluk, district;
+ /* Calculate maximum bill in paise */ 
+ bill_paise = 5000 
+ + (units > 100 ? 100 : units) * 0 
+ + (units > 100 ? 
+ ((units - 100 > 100) ? 100 : units - 100) * 225 : 0) 
+ + (units > 200 ? (units - 200) * 450 : 0);
+ /* Calculate totals for different scales */ 
+ village = bill_paise * 4000LL;
+ taluk = bill_paise * 60000LL;
+ district = bill_paise * 800000LL;
+Python Programming Assignment — Student Template 
+ printf("Maximum bill: %lld paise\n", bill_paise);
+ printf("\nTotal for 4000 households: %lld paise\n", village);
+ printf("Total for 60000 households: %lld paise\n", taluk);
+ printf("Total for 800000 households: %lld paise\n", district);
+ printf("\nINT_MAX: %d\n", INT_MAX);
+ printf("LONG_MAX: %ld\n", LONG_MAX);
+ printf("LLONG_MAX: %lld\n", LLONG_MAX);
+ printf("\nType comparison:\n");
+ if (district <= INT_MAX) 
+ printf("int can store the district total.\n");
+ else 
+ printf("int cannot store the district total.\n");
+ if (district <= LONG_MAX) 
+ printf("long can store the district total.\n");
+ else 
+ printf("long cannot store the district total.\n");
+ if (district <= LLONG_MAX) 
+ printf("long long can store the district total.\n");
+ else 
+ printf("long long cannot store the district total.\n");
+ return 0;
+}

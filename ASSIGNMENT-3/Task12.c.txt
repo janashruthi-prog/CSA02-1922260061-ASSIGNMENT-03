@@ -1,0 +1,48 @@
+Task12.c
+#include <stdio.h> 
+#include <stdint.h> 
+#include <inttypes.h> 
+/* 
+* Demonstration model: 
+* - energy input is in whole watt-hours (Wh) 
+* - tariff rates are loaded at run time from the user, not #define 
+* - peak period is 18:00 to 22:00 
+* - this simplified input assumes the whole interval is either peak or off-peak. 
+* A production system must split intervals that cross 18:00 or 22:00. 
+*/ 
+int main(void) 
+{ 
+uint64_t energy_wh;
+int hour;
+int64_t base_rate_paise_per_kwh;
+int64_t charge_paise;
+printf("Enter energy consumed in this 15-minute interval (Wh): ");
+if (scanf("%" SCNu64, &energy_wh) != 1) { 
+fprintf(stderr, "Invalid energy input.\n");
+return 1;
+} 
+printf("Enter interval start hour (0-23): ");
+if (scanf("%d", &hour) != 1 || hour < 0 || hour > 23) { 
+fprintf(stderr, "Invalid hour.\n");
+return 1;
+} 
+printf("Enter base tariff in paise per kWh: ");
+if (scanf("%" SCNd64, &base_rate_paise_per_kwh) != 1 || 
+base_rate_paise_per_kwh < 0) { 
+fprintf(stderr, "Invalid tariff.\n");
+return 1;
+} 
+/* Convert Wh to kWh without floating point; retain fractional paise
+as numerator and round to the nearest paise once. */ 
+{ 
+int peak = (hour >= 18 && hour < 22);
+uint64_t numerator = energy_wh * (uint64_t)base_rate_paise_per_kwh;
+if (peak) numerator = (numerator * 120U + 50U) / 100U;
+charge_paise = (int64_t)((numerator + 500U) / 1000U);
+} 
+printf("Energy: %" PRIu64 " Wh\n", energy_wh);
+printf("Charge: Rs %" PRId64 ".%02" PRId64 "\n", 
+charge_paise / 100, charge_paise % 100);
+printf("Note: simplified interval model; split readings at tariff boundaries in production.\n");
+return 0;
+}
